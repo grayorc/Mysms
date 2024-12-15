@@ -1,0 +1,12 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Mysms" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your dark theme here. -->
+         <item name="colorPrimary">@color/my_dark_primary</item>
+        <item name="colorPrimaryVariant">#00BCD4</item>
+        <item name="colorSecondary">#003E1F</item>
+        <item name="colorSecondaryVariant">#73BA9B</item>
+        <item name="android:background">#01110A</item>
+
+    </style>
+</resources>
