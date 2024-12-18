@@ -33,7 +33,6 @@ public class Contact_details extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            Log.i("tst", String.valueOf(getArguments().getInt(ARG_PARAM1)));
             Id = getArguments().getInt(ARG_PARAM1);
         }
     }

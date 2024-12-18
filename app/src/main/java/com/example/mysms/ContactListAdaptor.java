@@ -2,10 +2,13 @@ package com.example.mysms;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -33,16 +36,23 @@ public class ContactListAdaptor extends RecyclerView.Adapter<ContactListAdaptor.
         Contact m = arr.get(position);
         holder.txtName.setText(m.getName());
         holder.txtPhone.setText(String.valueOf(m.getPhoneNumber()));
-
+//        try {
+//            holder.txtName.setText(String.valueOf(m.getId()));
+//        }catch (Exception e){
+//            holder.txtName.setText("err");
+//        }
         holder.itemView.setOnClickListener(v -> {
+//            Log.d("ContactListAdaptor", "Item clicked: " + String.valueOf(m.getId()));
+//            Toast.makeText(context, String.valueOf(m.getId()), Toast.LENGTH_SHORT).show();
             FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
-            Contact_details fragment = Contact_details.newInstance(m.getId());
+            EditContact fragment = EditContact.newInstance(m.getId());
             fragmentManager.beginTransaction()
-                    .replace(R.id.contact_details, fragment)
+                    .replace(R.id.fragment_container, fragment)
                     .addToBackStack(null)
                     .commit();
         });
     }
+
 
     @Override
     public int getItemCount() {

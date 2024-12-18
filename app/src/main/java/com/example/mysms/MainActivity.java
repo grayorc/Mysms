@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,17 +16,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import java.util.ArrayList;
 import java.util.List;
+import com.example.mysms.R;
+import android.view.MenuItem;
+
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,13 +47,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        EdgeToEdge.enable(this);
-        setContentView(R.layout.fragment_contact__list);
+        setContentView(R.layout.activity_main);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.recyclerView), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+//            return insets;
+//        });
+
         //database
         DatabaseManager dbm = new DatabaseManager(this);
         SQLiteDatabase sld = dbm.getReadableDatabase();
@@ -52,6 +62,31 @@ public class MainActivity extends AppCompatActivity {
             Log.i("DB_contacts", "Database opened");
             sld.close();
         }
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment selectedFragment = null;
+                if(item.getItemId() == R.id.nav_home){
+                    selectedFragment = new Contact_List();
+                }
+                else if(item.getItemId() == R.id.nav_dashboard){
+                    selectedFragment = new Contact_List();
+                }
+                else if(item.getItemId() == R.id.nav_notifications) {
+                    selectedFragment = new CreateContact();
+                }
+
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
+                return true;
+            }
+        });
+
+        // Load the default fragment
+//        if (savedInstanceState == null) {
+//            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//        }
         //create contact
 //        EditText nameInp = findViewById(R.id.name);
 //        EditText phoneNumberInp = findViewById(R.id.phoneNumber);
@@ -67,12 +102,12 @@ public class MainActivity extends AppCompatActivity {
 //        });
 //        TextView tx = findViewById(R.id.title);
         //list contact
-        RecyclerView rv = findViewById(R.id.recyclerView);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        rv.setLayoutManager(linearLayoutManager);
-        ArrayList<Contact> im = (ArrayList<Contact>) dbm.getAllContacts();
-        ContactListAdaptor adp = new ContactListAdaptor(this, im);
-        rv.setAdapter(adp);
+//        RecyclerView rv = findViewById(R.id.recyclerView);
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+//        rv.setLayoutManager(linearLayoutManager);
+//        ArrayList<Contact> im = (ArrayList<Contact>) dbm.getAllContacts();
+//        ContactListAdaptor adp = new ContactListAdaptor(this, im);
+//        rv.setAdapter(adp);
 
 
         // Request permissions for notifications
@@ -89,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Register the broadcast receiver
         registerReceiver(myBroadcastReceiver, new IntentFilter(Intent.ACTION_USER_UNLOCKED));
-
     }
 
     MyBroadcastReceiver myBroadcastReceiver = new MyBroadcastReceiver();

@@ -1,38 +1,43 @@
 package com.example.mysms;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.Nullable;public class Contact {
+    private int id;
+    private String name;
+    private String phoneNumber;
 
-public class Contact {
-    private int Id;
-    private String Name;
-    private String PhoneNumber;
+    public Contact(String name, String phoneNumber) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.id = -1;
+    }
 
-    public Contact(String name,String phoneNumber,int id) {
-        Name = name;
-        PhoneNumber = phoneNumber;
+    public Contact(String name, String phoneNumber, int id) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.id = id;
     }
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     public String getPhoneNumber() {
-        return PhoneNumber;
+        return phoneNumber;
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        PhoneNumber = phoneNumber;
+        this.phoneNumber = phoneNumber;
     }
 }
