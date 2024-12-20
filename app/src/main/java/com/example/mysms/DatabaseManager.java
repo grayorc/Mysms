@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+
 public class DatabaseManager extends SQLiteOpenHelper {
     private static String DBName = "sms.db";
     private static final String Contact_Table = "contacts";
@@ -35,13 +36,14 @@ public class DatabaseManager extends SQLiteOpenHelper {
     private static final String Sent_messages_SENT_TO = "sent_to";
 
     final static int Version = 1;
+
     public DatabaseManager(@Nullable Context context) {
         super(context, DBName, null, Version);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        
+
         String create_contacts_table = "CREATE TABLE IF NOT EXISTS " + Contact_Table + " ("
                 + Contact_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + Contact_NAME + " TEXT, "
@@ -120,48 +122,64 @@ public class DatabaseManager extends SQLiteOpenHelper {
         }
     }
 
-    public void updateContact(Contact contact){
-        //update contact
+    public void updateContact(Contact contact) {
         SQLiteDatabase sld = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(Contact_NAME, contact.getName());
         cv.put(Contact_PHONE, contact.getPhoneNumber());
         try {
             sld.update(Contact_Table, cv, "id=?", new String[]{String.valueOf(contact.getId())});
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.i("DB_contacts", "failed to update");
         }
     }
-
-    public List<ChatMessage> getChatHistory() {
+    public List<ChatMessage> getChatHistory(int id) {
         List<ChatMessage> chatHistory = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT " + Received_messages_CONTENT +
                 " as content, " + Received_messages_TIMESTAMP +
                 " as timestamp, '0' as isSent " +
                 "FROM " + Received_messages_Table +
+                " WHERE " + Received_messages_SENDER + " = ?" +
                 " UNION ALL " +
                 "SELECT " + Sent_messages_CONTENT +
                 " as content, " + Sent_messages_TIMESTAMP +
-                " as timestamp, '-1' as isSent " +
+                " as timestamp, '1' as isSent " +
                 "FROM " + Sent_messages_Table +
+                " WHERE " + Sent_messages_SENT_TO + " = ?" +
                 " ORDER BY timestamp ASC";
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(id), String.valueOf(id)});
         if (cursor.moveToFirst()) {
             do {
                 String message = cursor.getString(cursor.getColumnIndexOrThrow("content"));
                 String timestamp = cursor.getString(cursor.getColumnIndexOrThrow("timestamp"));
                 boolean isSent = cursor.getInt(cursor.getColumnIndexOrThrow("isSent")) == 1;
                 ChatMessage chatMessage = new ChatMessage(message, timestamp, isSent);
-                chatHistory.add(chatMessage); } while (cursor.moveToNext());
-        } cursor.close();
+                chatHistory.add(chatMessage);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
         db.close();
         return chatHistory;
+    }
+
+
+    public void insertSentMessage(String message, String timestamp, String sentTo,String isSent) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(Sent_messages_CONTENT, message);
+        cv.put(Sent_messages_TIMESTAMP, timestamp);
+        cv.put(Sent_messages_IS_SENT, isSent);
+        cv.put(Sent_messages_SENT_TO, sentTo);
+        db.insert(Sent_messages_Table, null, cv);
+        db.close();
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + Contact_Table);
+        db.execSQL("DROP TABLE IF EXISTS " + Sent_messages_Table);
+        db.execSQL("DROP TABLE IF EXISTS " + Received_messages_Table);
         onCreate(db);
     }
 }

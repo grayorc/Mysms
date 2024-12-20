@@ -18,15 +18,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
     @NonNull
     @Override
     public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_message, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_item, parent, false);
         return new ChatViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
-        Message chatMessage = chatMessages.get(position);
-        holder.textViewMessage.setText(chatMessage.getContent());
-        // Align the message text depending on whether it was sent or received
+        ChatMessage chatMessage = chatMessages.get(position);
+        holder.textViewMessage.setText(chatMessage.getMessage());
         holder.textViewMessage.setTextAlignment(chatMessage.isSent() ? View.TEXT_ALIGNMENT_TEXT_END : View.TEXT_ALIGNMENT_TEXT_START);
     }
 

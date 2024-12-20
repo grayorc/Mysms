@@ -15,11 +15,23 @@ public class ChatMessage {
         return message;
     }
 
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     public String getTimestamp() {
         return timestamp;
     }
 
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
     public boolean isSent() {
         return isSent;
+    }
+
+    public void setSent(boolean sent) {
+        isSent = sent;
     }
 }

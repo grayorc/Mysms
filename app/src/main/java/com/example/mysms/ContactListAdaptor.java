@@ -34,13 +34,13 @@ public class ContactListAdaptor extends RecyclerView.Adapter<ContactListAdaptor.
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Contact m = arr.get(position);
-        holder.txtName.setText(m.getName());
+//        holder.txtName.setText(m.getName());
         holder.txtPhone.setText(String.valueOf(m.getPhoneNumber()));
-//        try {
-//            holder.txtName.setText(String.valueOf(m.getId()));
-//        }catch (Exception e){
-//            holder.txtName.setText("err");
-//        }
+        try {
+            holder.txtName.setText(String.valueOf(m.getId()));
+        }catch (Exception e){
+            holder.txtName.setText("err");
+        }
         holder.itemView.setOnClickListener(v -> {
 //            Log.d("ContactListAdaptor", "Item clicked: " + String.valueOf(m.getId()));
 //            Toast.makeText(context, String.valueOf(m.getId()), Toast.LENGTH_SHORT).show();

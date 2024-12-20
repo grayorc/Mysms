@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                     selectedFragment = new Contact_List();
                 }
                 else if(item.getItemId() == R.id.nav_dashboard){
-                    selectedFragment = new Contact_List();
+                    selectedFragment = new ChatFragment();
                 }
                 else if(item.getItemId() == R.id.nav_notifications) {
                     selectedFragment = new CreateContact();
