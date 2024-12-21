@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,18 +36,35 @@ public class ContactListAdaptor extends RecyclerView.Adapter<ContactListAdaptor.
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Contact m = arr.get(position);
-//        holder.txtName.setText(m.getName());
+        holder.txtName.setText(m.getName());
         holder.txtPhone.setText(String.valueOf(m.getPhoneNumber()));
-        try {
-            holder.txtName.setText(String.valueOf(m.getId()));
-        }catch (Exception e){
-            holder.txtName.setText("err");
-        }
-        holder.itemView.setOnClickListener(v -> {
+//        try {
+//            holder.txtName.setText(String.valueOf(m.getId()));
+//        }catch (Exception e){
+//            holder.txtName.setText("err");
+//        }
+        holder.deleteBtn.setOnClickListener(v -> {
+            DatabaseManager dbm = new DatabaseManager(context);
+            dbm.deleteContact(m);
+            arr.remove(m);
+            notifyDataSetChanged();
+        });
+        holder.editBtn.setOnClickListener(v -> {
 //            Log.d("ContactListAdaptor", "Item clicked: " + String.valueOf(m.getId()));
 //            Toast.makeText(context, String.valueOf(m.getId()), Toast.LENGTH_SHORT).show();
             FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
             EditContact fragment = EditContact.newInstance(m.getId());
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        holder.itemView.setOnClickListener(v -> {
+//            Log.d("ContactListAdaptor", "Item clicked: " + String.valueOf(m.getId()));
+//            Toast.makeText(context, String.valueOf(m.getId()), Toast.LENGTH_SHORT).show();
+            FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
+            ChatFragment fragment = ChatFragment.newInstance(m.getId());
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .addToBackStack(null)
@@ -61,11 +80,14 @@ public class ContactListAdaptor extends RecyclerView.Adapter<ContactListAdaptor.
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView txtName, txtPhone;
+        ImageButton deleteBtn, editBtn;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             txtName = itemView.findViewById(R.id.txtName);
             txtPhone = itemView.findViewById(R.id.txtPhone);
+            deleteBtn = itemView.findViewById(R.id.deleteBtn);
+            editBtn = itemView.findViewById(R.id.editBtn);
         }
     }
 }

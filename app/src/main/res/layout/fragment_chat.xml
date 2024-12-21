@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:background="?attr/colorSecondary"
         android:padding="8dp">
 
         <EditText
@@ -24,11 +25,13 @@
             android:layout_weight="1"
             android:hint="Type a message"/>
 
-        <Button
+        <ImageButton
             android:id="@+id/buttonSend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Send"/>
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/send_plane_2_fill"
+            android:background="@drawable/button_background"
+            />
 
     </LinearLayout>
 </LinearLayout>

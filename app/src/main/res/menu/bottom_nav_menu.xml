@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    >
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/contacts_fill"
-        android:title="Home" />
+        android:title="Contacts" />
     <item
         android:id="@+id/nav_dashboard"
-        android:icon="@drawable/contacts_fill"
-        android:title="Dashboard" />
+        android:icon="@drawable/chat_1_fill"
+        android:title="Chats" />
     <item
         android:id="@+id/nav_notifications"
-        android:icon="@drawable/contacts_fill"
-        android:title="Notifications" />
+        android:icon="@drawable/user_add_fill"
+        android:title="Create contact" />
 </menu>

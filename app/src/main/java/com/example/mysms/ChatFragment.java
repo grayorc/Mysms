@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,11 +24,34 @@ public class ChatFragment extends Fragment {
 
     private RecyclerView recyclerViewChat;
     private EditText editTextMessage;
-    private Button buttonSend;
+    private ImageButton buttonSend;
     private ChatAdapter chatAdapter;
     private List<ChatMessage> chatMessages;
     private DatabaseManager dbm;
     private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
+
+    private static final String ARG_PARAM1 = "Id";
+    private int Id;
+
+    public ChatFragment() {
+        // Required empty public constructor
+    }
+
+    public static ChatFragment newInstance(int Id) {
+        ChatFragment fragment = new ChatFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_PARAM1, Id);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            Id = getArguments().getInt(ARG_PARAM1);
+        }
+    }
 
     @Nullable
     @Override
@@ -39,7 +63,8 @@ public class ChatFragment extends Fragment {
         buttonSend = view.findViewById(R.id.buttonSend);
 
         dbm = new DatabaseManager(getActivity());
-        chatMessages = dbm.getChatHistory(1);
+        chatMessages = dbm.getChatHistory(Id);
+        Contact contact = dbm.getContact(Id);
         chatAdapter = new ChatAdapter(chatMessages);
         recyclerViewChat.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerViewChat.setAdapter(chatAdapter);
@@ -48,13 +73,12 @@ public class ChatFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String message = editTextMessage.getText().toString().trim();
-                String phoneNumber = "09011100498";
-                if (!message.isEmpty() && !phoneNumber.isEmpty()) {
+                if (!message.isEmpty() && !contact.getPhoneNumber().isEmpty()) {
                     if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
                         requestPermissions(new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
                     } else {
                         String timestamp = String.valueOf(System.currentTimeMillis());
-                        if(sendSMSMessage(phoneNumber, message)) {
+                        if(sendSMSMessage(contact.getPhoneNumber(), message)) {
                             Toast.makeText(getActivity(), "SMS sent.", Toast.LENGTH_SHORT).show();
                             dbm.insertSentMessage(message, timestamp, "1","1");
 

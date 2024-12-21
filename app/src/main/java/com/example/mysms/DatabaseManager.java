@@ -82,6 +82,12 @@ public class DatabaseManager extends SQLiteOpenHelper {
         sld.close();
     }
 
+    public void deleteContact(Contact contact){
+        SQLiteDatabase sld = this.getWritableDatabase();
+        sld.delete(Contact_Table, "id=?", new String[]{String.valueOf(contact.getId())});
+        sld.close();
+    }
+
     public List<Contact> getAllContacts() {
         List<Contact> contactList = new ArrayList<>();
         SQLiteDatabase sld = this.getReadableDatabase();
