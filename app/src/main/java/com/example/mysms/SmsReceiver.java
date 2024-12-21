@@ -32,8 +32,8 @@ public class SmsReceiver extends BroadcastReceiver {
                     //make new contact if received message from new number
                     Contact contact = new Contact(sender,sender);
                     Log.i("message",content);
-                    dbm.insertContact(contact);
-                    dbm.insertReceivedMessage(content, timestamp, contact.getId());
+                    Contact newContact = dbm.insertContact(contact);
+                    dbm.insertReceivedMessage(content, timestamp, newContact.getId());
                     dbm.close();
                 }
             }

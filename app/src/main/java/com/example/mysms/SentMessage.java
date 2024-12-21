@@ -1,24 +1,20 @@
 package com.example.mysms;
 
 public class SentMessage {
-    private int SentTo;
+    private int ContactId;
     private String content;
     private String timestamp;
     private String isSent;
 
-    public SentMessage(int SentTo, String content, String timestamp, String isSent) {
-        this.SentTo = SentTo;
+    public SentMessage(int ContactId, String content, String timestamp, String isSent) {
+        this.ContactId = ContactId;
         this.content = content;
         this.timestamp = timestamp;
         this.isSent = isSent;
     }
 
-    public int getSentTo() {
-        return SentTo;
-    }
-
-    public void setSentTo(int sentTo) {
-        SentTo = sentTo;
+    public int getContactId() {
+        return ContactId;
     }
 
     public String getContent() {

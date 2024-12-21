@@ -26,14 +26,14 @@ public class DatabaseManager extends SQLiteOpenHelper {
     private static final String Received_messages_ID = "id";
     private static final String Received_messages_CONTENT = "content";
     private static final String Received_messages_TIMESTAMP = "timestamp";
-    private static final String Received_messages_SENDER = "sender";
+    private static final String Received_messages_CONTACT_ID = "contact_id";
     //sent messages table
     private static final String Sent_messages_Table = "sent_messages";
     private static final String Sent_messages_ID = "id";
     private static final String Sent_messages_CONTENT = "content";
     private static final String Sent_messages_TIMESTAMP = "timestamp";
     private static final String Sent_messages_IS_SENT = "is_sent";
-    private static final String Sent_messages_SENT_TO = "sent_to";
+    private static final String Sent_messages_CONTACT_ID = "contact_id";
 
     final static int Version = 1;
 
@@ -43,7 +43,6 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
         String create_contacts_table = "CREATE TABLE IF NOT EXISTS " + Contact_Table + " ("
                 + Contact_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + Contact_NAME + " TEXT, "
@@ -53,14 +52,15 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 + Received_messages_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + Received_messages_CONTENT + " TEXT, "
                 + Received_messages_TIMESTAMP + " TEXT, "
-                + Received_messages_SENDER + " INTEGER)";
+                + Received_messages_CONTACT_ID + " INTEGER, "
+                + "FOREIGN KEY(" + Received_messages_CONTACT_ID + ") REFERENCES " + Contact_Table + "(" + Contact_ID + "))";
 
         String create_sent_messages_table = "CREATE TABLE IF NOT EXISTS " + Sent_messages_Table + " ("
                 + Sent_messages_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + Sent_messages_CONTENT + " TEXT, "
                 + Sent_messages_TIMESTAMP + " TEXT, "
                 + Sent_messages_IS_SENT + " TEXT, "
-                + Sent_messages_SENT_TO + " INTEGER)";
+                + "FOREIGN KEY(" + Sent_messages_CONTACT_ID + ") REFERENCES " + Contact_Table + "(" + Contact_ID + "))";
 
         try {
             db.execSQL(create_contacts_table);
@@ -73,13 +73,15 @@ public class DatabaseManager extends SQLiteOpenHelper {
         Log.i("DB", "Databases are created");
     }
 
-    public void insertContact(Contact contact) {
+
+    public Contact insertContact(Contact contact) {
         SQLiteDatabase sld = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(Contact_NAME, contact.getName());
         cv.put(Contact_PHONE, contact.getPhoneNumber());
-        sld.insert(Contact_Table, null, cv);
+        long id = sld.insert(Contact_Table, null, cv);
         sld.close();
+        return new Contact(contact.getName(), contact.getPhoneNumber(), (int)id);
     }
 
     public void deleteContact(Contact contact){
@@ -146,13 +148,13 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 " as content, " + Received_messages_TIMESTAMP +
                 " as timestamp, '0' as isSent " +
                 "FROM " + Received_messages_Table +
-                " WHERE " + Received_messages_SENDER + " = ?" +
+                " WHERE " + Received_messages_CONTACT_ID + " = ?" +
                 " UNION ALL " +
                 "SELECT " + Sent_messages_CONTENT +
                 " as content, " + Sent_messages_TIMESTAMP +
                 " as timestamp, '1' as isSent " +
                 "FROM " + Sent_messages_Table +
-                " WHERE " + Sent_messages_SENT_TO + " = ?" +
+                " WHERE " + Sent_messages_CONTACT_ID + " = ?" +
                 " ORDER BY timestamp ASC";
         Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(id), String.valueOf(id)});
         if (cursor.moveToFirst()) {
@@ -170,23 +172,23 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
 
-    public void insertSentMessage(String message, String timestamp, String sentTo,String isSent) {
+    public void insertSentMessage(String message, String timestamp, String ContactId,String isSent) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(Sent_messages_CONTENT, message);
         cv.put(Sent_messages_TIMESTAMP, timestamp);
         cv.put(Sent_messages_IS_SENT, isSent);
-        cv.put(Sent_messages_SENT_TO, sentTo);
+        cv.put(Sent_messages_CONTACT_ID, ContactId);
         db.insert(Sent_messages_Table, null, cv);
         db.close();
     }
 
-    public void insertReceivedMessage(String message, String timestamp, int sender) {
+    public void insertReceivedMessage(String message, String timestamp, int ContactId) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(Received_messages_CONTENT, message);
         cv.put(Received_messages_TIMESTAMP, timestamp);
-        cv.put(Received_messages_SENDER, sender);
+        cv.put(Received_messages_CONTACT_ID, ContactId);
         db.insert(Received_messages_Table, null, cv);
         db.close();
     }

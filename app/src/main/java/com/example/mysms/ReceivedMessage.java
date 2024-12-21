@@ -3,12 +3,12 @@ package com.example.mysms;
 public class ReceivedMessage {
     private String content;
     private String timestamp;
-    private String sender;
+    private int Contact_id;
 
-    public ReceivedMessage(String content, String timestamp, String sender) {
+    public ReceivedMessage(String content, String timestamp, int Contact_id) {
         this.content = content;
         this.timestamp = timestamp;
-        this.sender = sender;
+        this.Contact_id = Contact_id;
     }
 
     public String getContent() {
@@ -27,11 +27,11 @@ public class ReceivedMessage {
         this.timestamp = timestamp;
     }
 
-    public String getSender() {
-        return sender;
+    public int getContact_id() {
+        return Contact_id;
     }
 
-    public void setSender(String sender) {
-        this.sender = sender;
+    public void setContact_id(String sender) {
+        this.Contact_id = Contact_id;
     }
 }
