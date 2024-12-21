@@ -27,11 +27,14 @@ public class SmsReceiver extends BroadcastReceiver {
                 Contact Sender = dbm.getContactByPhone(sender);
                 if(Sender != null){
                     dbm.insertReceivedMessage(content, timestamp, Sender.getId());
+                    Log.i("message",content + "");
                 }else {
                     //make new contact if received message from new number
                     Contact contact = new Contact(sender,sender);
+                    Log.i("message",content);
                     dbm.insertContact(contact);
                     dbm.insertReceivedMessage(content, timestamp, contact.getId());
+                    dbm.close();
                 }
             }
         }

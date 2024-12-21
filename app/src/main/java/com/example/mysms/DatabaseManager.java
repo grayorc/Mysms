@@ -187,7 +187,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         cv.put(Received_messages_CONTENT, message);
         cv.put(Received_messages_TIMESTAMP, timestamp);
         cv.put(Received_messages_SENDER, sender);
-        db.insert(Sent_messages_Table, null, cv);
+        db.insert(Received_messages_Table, null, cv);
         db.close();
     }
 
