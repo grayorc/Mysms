@@ -65,6 +65,7 @@ public class ChatFragment extends Fragment {
         dbm = new DatabaseManager(getActivity());
         chatMessages = dbm.getChatHistory(Id);
         Contact contact = dbm.getContact(Id);
+        editTextMessage.setHint("Send message to " +Id);
         chatAdapter = new ChatAdapter(chatMessages);
         recyclerViewChat.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerViewChat.setAdapter(chatAdapter);
@@ -73,18 +74,18 @@ public class ChatFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String message = editTextMessage.getText().toString().trim();
-                if (!message.isEmpty() && !contact.getPhoneNumber().isEmpty()) {
+                if (!message.isEmpty()) {
                     if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
                         requestPermissions(new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
                     } else {
                         String timestamp = String.valueOf(System.currentTimeMillis());
-                        if(sendSMSMessage(contact.getPhoneNumber(), message)) {
+                        if(sendSMSMessage("1", message)) {
                             Toast.makeText(getActivity(), "SMS sent.", Toast.LENGTH_SHORT).show();
-                            dbm.insertSentMessage(message, timestamp, "1","1");
+                            dbm.insertSentMessage(message, timestamp, String.valueOf(contact.getId()),"1");
 
                         }else {
                             Toast.makeText(getActivity(), "SMS failed to send.", Toast.LENGTH_SHORT).show();
-                            dbm.insertSentMessage(message, timestamp, "1","0");
+                            dbm.insertSentMessage(message, timestamp,  String.valueOf(contact.getId()),"0");
                         }
 
                         chatMessages.add(new ChatMessage(message, timestamp, true));

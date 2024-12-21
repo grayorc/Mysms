@@ -53,7 +53,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 + Received_messages_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + Received_messages_CONTENT + " TEXT, "
                 + Received_messages_TIMESTAMP + " TEXT, "
-                + Received_messages_SENDER + " TEXT)";
+                + Received_messages_SENDER + " INTEGER)";
 
         String create_sent_messages_table = "CREATE TABLE IF NOT EXISTS " + Sent_messages_Table + " ("
                 + Sent_messages_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -181,6 +181,32 @@ public class DatabaseManager extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void insertReceivedMessage(String message, String timestamp, int sender) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(Received_messages_CONTENT, message);
+        cv.put(Received_messages_TIMESTAMP, timestamp);
+        cv.put(Received_messages_SENDER, sender);
+        db.insert(Sent_messages_Table, null, cv);
+        db.close();
+    }
+
+    public Contact getContactByPhone(String phoneNumber) {
+        SQLiteDatabase sld = this.getReadableDatabase();
+        Cursor cursor = sld.query(Contact_Table, null, Contact_PHONE + "=?", new String[]{phoneNumber}, null, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow(Contact_ID));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(Contact_NAME));
+                String phone = cursor.getString(cursor.getColumnIndexOrThrow(Contact_PHONE));
+                Contact contact = new Contact(name, phone, id);
+                cursor.close();
+                sld.close();
+                return contact;
+            }
+        }
+        return null;
+    }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + Contact_Table);
