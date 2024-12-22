@@ -60,6 +60,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 + Sent_messages_CONTENT + " TEXT, "
                 + Sent_messages_TIMESTAMP + " TEXT, "
                 + Sent_messages_IS_SENT + " TEXT, "
+                + Sent_messages_CONTACT_ID + " INTEGER, "
                 + "FOREIGN KEY(" + Sent_messages_CONTACT_ID + ") REFERENCES " + Contact_Table + "(" + Contact_ID + "))";
 
         try {
@@ -67,11 +68,12 @@ public class DatabaseManager extends SQLiteOpenHelper {
             db.execSQL(create_received_messages_table);
             db.execSQL(create_sent_messages_table);
         } catch (Exception e) {
-            Log.i("DB", "Databases are not created");
+            Log.i("DB", "Databases are not created: " + e.toString());
         }
 
         Log.i("DB", "Databases are created");
     }
+
 
 
     public Contact insertContact(Contact contact) {
