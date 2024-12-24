@@ -35,7 +35,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         } else if (chatMessage.isSent() == -1) {
             layoutParams.gravity = Gravity.START;
         } else if (chatMessage.isSent() == 0) {
-            layoutParams.gravity = Gravity.START;
+            //set color red or something
         }
         holder.linearLayoutMessage.setLayoutParams(layoutParams);
     }
