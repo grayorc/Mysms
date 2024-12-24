@@ -143,12 +143,12 @@ public class DatabaseManager extends SQLiteOpenHelper {
             Log.i("DB_contacts", "failed to update");
         }
     }
-    public List<ChatMessage> getChatHistory(int id) {
+    public List<ChatMessage> getChatHistory(int contactId) {
         List<ChatMessage> chatHistory = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT " + Received_messages_CONTENT +
                 " as content, " + Received_messages_TIMESTAMP +
-                " as timestamp, '0' as isSent " +
+                " as timestamp, '-1' as isSent " +
                 "FROM " + Received_messages_Table +
                 " WHERE " + Received_messages_CONTACT_ID + " = ?" +
                 " UNION ALL " +
@@ -158,12 +158,12 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 "FROM " + Sent_messages_Table +
                 " WHERE " + Sent_messages_CONTACT_ID + " = ?" +
                 " ORDER BY timestamp ASC";
-        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(id), String.valueOf(id)});
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(contactId), String.valueOf(contactId)});
         if (cursor.moveToFirst()) {
             do {
                 String message = cursor.getString(cursor.getColumnIndexOrThrow("content"));
                 String timestamp = cursor.getString(cursor.getColumnIndexOrThrow("timestamp"));
-                boolean isSent = cursor.getInt(cursor.getColumnIndexOrThrow("isSent")) == 1;
+                int isSent = cursor.getInt(cursor.getColumnIndexOrThrow("isSent"));
                 ChatMessage chatMessage = new ChatMessage(message, timestamp, isSent);
                 chatHistory.add(chatMessage);
             } while (cursor.moveToNext());
@@ -172,7 +172,6 @@ public class DatabaseManager extends SQLiteOpenHelper {
         db.close();
         return chatHistory;
     }
-
 
     public void insertSentMessage(String message, String timestamp, String ContactId,String isSent) {
         SQLiteDatabase db = this.getWritableDatabase();

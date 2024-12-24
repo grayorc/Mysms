@@ -3,10 +3,9 @@ package com.example.mysms;
 public class ChatMessage {
     private String message;
     private String timestamp;
-    private boolean isSent;
-    //TODO: add a bool to recognize if its a sender or receiver
+    private int isSent;
 
-    public ChatMessage(String message, String timestamp, boolean isSent) {
+    public ChatMessage(String message, String timestamp, int isSent) {
         this.message = message;
         this.timestamp = timestamp;
         this.isSent = isSent;
@@ -28,11 +27,11 @@ public class ChatMessage {
         this.timestamp = timestamp;
     }
 
-    public boolean isSent() {
+    public int isSent() {
         return isSent;
     }
 
-    public void setSent(boolean sent) {
+    public void setSent(int sent) {
         isSent = sent;
     }
 }

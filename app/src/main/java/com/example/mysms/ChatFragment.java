@@ -34,7 +34,7 @@ public class ChatFragment extends Fragment {
     private int Id;
 
     public ChatFragment() {
-        // Required empty public constructor
+
     }
 
     public static ChatFragment newInstance(int Id) {
@@ -88,7 +88,7 @@ public class ChatFragment extends Fragment {
                             dbm.insertSentMessage(message, timestamp,  String.valueOf(contact.getId()),"0");
                         }
 
-                        chatMessages.add(new ChatMessage(message, timestamp, true));
+                        chatMessages.add(new ChatMessage(message, timestamp, -1));
                         chatAdapter.notifyItemInserted(chatMessages.size() - 1);
                         editTextMessage.setText("");
                         recyclerViewChat.scrollToPosition(chatMessages.size() - 1);
