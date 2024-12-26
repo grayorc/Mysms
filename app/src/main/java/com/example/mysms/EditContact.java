@@ -27,7 +27,6 @@ public class EditContact extends Fragment {
     private int Id;
 
     public EditContact() {
-        // Required empty public constructor
     }
 
     public static EditContact newInstance(int Id) {

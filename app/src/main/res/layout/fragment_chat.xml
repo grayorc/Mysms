@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="?attr/colorSecondary"
+        android:backgroundTint="@color/edit_bak"
         android:padding="8dp">
 
         <EditText
@@ -23,6 +24,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="@android:color/transparent"
             android:hint="Type a message"/>
 
         <ImageButton

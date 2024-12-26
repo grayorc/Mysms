@@ -30,8 +30,6 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
                 }
                 messageBody.append(messages[i].getMessageBody());
             }
-
-            // Initialize NotificationManager
             NotificationManager NfManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -41,7 +39,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
             }
 
             NotificationCompat.Builder sNotifbuilder = new NotificationCompat.Builder(context, "MyChannel")
-                    .setSmallIcon(R.drawable.ic_launcher_background)
+                    .setSmallIcon(R.drawable.chat_1_fill)
                     .setContentTitle(sender)
                     .setContentText(messageBody.toString())
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT);

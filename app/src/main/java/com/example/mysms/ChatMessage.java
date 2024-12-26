@@ -5,10 +5,22 @@ public class ChatMessage {
     private String timestamp;
     private int isSent;
 
-    public ChatMessage(String message, String timestamp, int isSent) {
+    private int Contact_id;
+
+    public ChatMessage(String message, String timestamp, int isSent, int Contact_id) {
         this.message = message;
         this.timestamp = timestamp;
         this.isSent = isSent;
+        this.Contact_id = Contact_id;
+
+    }
+
+    public int getContact_id() {
+        return Contact_id;
+    }
+
+    public void setContact_id(int Contact_id) {
+        this.Contact_id = Contact_id;
     }
 
     public String getMessage() {

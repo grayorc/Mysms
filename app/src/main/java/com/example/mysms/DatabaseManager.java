@@ -143,18 +143,21 @@ public class DatabaseManager extends SQLiteOpenHelper {
             Log.i("DB_contacts", "failed to update");
         }
     }
+
     public List<ChatMessage> getChatHistory(int contactId) {
         List<ChatMessage> chatHistory = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT " + Received_messages_CONTENT +
-                " as content, " + Received_messages_TIMESTAMP +
-                " as timestamp, '-1' as isSent " +
-                "FROM " + Received_messages_Table +
+                " , " + Received_messages_TIMESTAMP +
+                " , '-1' as isSent, " +
+                Received_messages_CONTACT_ID +
+                " FROM " + Received_messages_Table +
                 " WHERE " + Received_messages_CONTACT_ID + " = ?" +
                 " UNION ALL " +
                 "SELECT " + Sent_messages_CONTENT +
                 " as content, " + Sent_messages_TIMESTAMP +
-                " as timestamp, '1' as isSent " +
+                " as timestamp, " + Sent_messages_IS_SENT +
+                " as isSent, " + Sent_messages_CONTACT_ID + " as contact_id " +
                 "FROM " + Sent_messages_Table +
                 " WHERE " + Sent_messages_CONTACT_ID + " = ?" +
                 " ORDER BY timestamp ASC";
@@ -164,7 +167,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 String message = cursor.getString(cursor.getColumnIndexOrThrow("content"));
                 String timestamp = cursor.getString(cursor.getColumnIndexOrThrow("timestamp"));
                 int isSent = cursor.getInt(cursor.getColumnIndexOrThrow("isSent"));
-                ChatMessage chatMessage = new ChatMessage(message, timestamp, isSent);
+                int contact_id = cursor.getInt(cursor.getColumnIndexOrThrow("contact_id"));
+                ChatMessage chatMessage = new ChatMessage(message, timestamp, isSent, contact_id);
                 chatHistory.add(chatMessage);
             } while (cursor.moveToNext());
         }
@@ -172,6 +176,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
         db.close();
         return chatHistory;
     }
+
+
 
     public void insertSentMessage(String message, String timestamp, String ContactId,String isSent) {
         SQLiteDatabase db = this.getWritableDatabase();

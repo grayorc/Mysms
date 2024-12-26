@@ -1,17 +1,14 @@
 package com.example.mysms;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,9 +18,14 @@ public class ContactListAdaptor extends RecyclerView.Adapter<ContactListAdaptor.
     Context context;
     ArrayList<Contact> arr;
 
-    public ContactListAdaptor(Context context, ArrayList<Contact> arr) {
+    boolean isForwarding;
+    String message;
+
+    public ContactListAdaptor(Context context, ArrayList<Contact> arr, boolean isForwarding,@Nullable String message) {
         this.context = context;
         this.arr = arr;
+        this.isForwarding = isForwarding;
+        this.message = message;
     }
 
     @NonNull
@@ -61,15 +63,27 @@ public class ContactListAdaptor extends RecyclerView.Adapter<ContactListAdaptor.
         });
 
         holder.itemView.setOnClickListener(v -> {
-//            Log.d("ContactListAdaptor", "Item clicked: " + String.valueOf(m.getId()));
-//            Toast.makeText(context, String.valueOf(m.getId()), Toast.LENGTH_SHORT).show();
             FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
-            ChatFragment fragment = ChatFragment.newInstance(m.getId());
+            ChatFragment fragment;
+
+            if (isForwarding) {
+                fragment = ChatFragment.newInstance(m.getId(), message);
+            } else {
+                fragment = ChatFragment.newInstance(m.getId(), null);
+            }
+
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .addToBackStack(null)
                     .commit();
         });
+
+        if (isForwarding) {
+            //hide edit and delete btns for forwarding
+            holder.editBtn.setVisibility(View.GONE);
+            holder.deleteBtn.setVisibility(View.GONE);
+        }
+
     }
 
 

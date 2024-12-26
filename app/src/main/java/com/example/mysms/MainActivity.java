@@ -41,19 +41,18 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_NOTIFICATION = 101;
     private static final int REQUEST_CODE_RECEIVE_SMS = 102;
     private static final int REQUEST_CODE_SEND_SMS = 103;
-    private static final int REQUEST_CODE_READ_PHONE_STATE = 105;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        EdgeToEdge.enable(this);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-//            return insets;
-//        });
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         //database
         DatabaseManager dbm = new DatabaseManager(this);
@@ -71,9 +70,6 @@ public class MainActivity extends AppCompatActivity {
                 if(item.getItemId() == R.id.nav_home){
                     selectedFragment = new Contact_List();
                 }
-                else if(item.getItemId() == R.id.nav_dashboard){
-                    selectedFragment = new ChatFragment();
-                }
                 else if(item.getItemId() == R.id.nav_notifications) {
                     selectedFragment = new CreateContact();
                 }
@@ -82,48 +78,23 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+        String[] permissions = {
+                Manifest.permission.SEND_SMS,
+                Manifest.permission.POST_NOTIFICATIONS,
+                Manifest.permission.RECEIVE_SMS
+        };
 
-        // Load the default fragment
-//        if (savedInstanceState == null) {
-//            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
-//        }
-        //create contact
-//        EditText nameInp = findViewById(R.id.name);
-//        EditText phoneNumberInp = findViewById(R.id.phoneNumber);
-//        Button saveBtn = findViewById(R.id.saveBtn);
-//        saveBtn.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                String name = nameInp.getText().toString();
-//                String phoneNumber = phoneNumberInp.getText().toString();
-//                Contact contact = new Contact(name, phoneNumber,0);
-//                dbm.InsertContact(contact);
-//                Toast.makeText(MainActivity.this, "saved", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//        TextView tx = findViewById(R.id.title);
-        //list contact
-//        RecyclerView rv = findViewById(R.id.recyclerView);
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-//        rv.setLayoutManager(linearLayoutManager);
-//        ArrayList<Contact> im = (ArrayList<Contact>) dbm.getAllContacts();
-//        ContactListAdaptor adp = new ContactListAdaptor(this, im);
-//        rv.setAdapter(adp);
-
-
-        // Request permissions for notifications
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, REQUEST_CODE_NOTIFICATION);
+        List<String> permissionsToRequest = new ArrayList<>();
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(MainActivity.this, permission) != PackageManager.PERMISSION_GRANTED) {
+                permissionsToRequest.add(permission);
+            }
         }
 
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.RECEIVE_SMS}, REQUEST_CODE_RECEIVE_SMS);
-        }
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.SEND_SMS}, REQUEST_CODE_SEND_SMS);
+        if (!permissionsToRequest.isEmpty()) {
+            ActivityCompat.requestPermissions(MainActivity.this, permissionsToRequest.toArray(new String[0]), 1);
         }
 
-        // Register the broadcast receiver
-        registerReceiver(myBroadcastReceiver, new IntentFilter(Intent.ACTION_USER_UNLOCKED));
     }
 
     MyBroadcastReceiver myBroadcastReceiver = new MyBroadcastReceiver();
@@ -155,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Unregister the receiver to prevent memory leaks
         unregisterReceiver(myBroadcastReceiver);
     }
 

@@ -2,8 +2,13 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+<!--    <color name="my_dark_primary">#ba2d0b</color>-->
     <color name="my_dark_primary">#ba2d0b</color>
     <color name="dark_bak">#01110A</color>
+    <color name="edit_bak">#17212B</color>
     <color name="light_bak">#F1F1F1</color>
     <color name="pur">#f72585</color>
+    <color name="yellow">#FFEB3B</color>
+    <color name="purple">#C9A3FF</color>
+    <color name="dark_purple">#4F00BD</color>
 </resources>
