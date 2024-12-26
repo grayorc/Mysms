@@ -29,7 +29,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
     private List<ChatMessage> chatMessages;
     Context context;
 
-    public ChatAdapter(List<ChatMessage> chatMessages, Context context) {
+    public ChatAdapter(@Nullable List<ChatMessage> chatMessages, Context context) {
         this.chatMessages = chatMessages;
         this.context = context;
     }

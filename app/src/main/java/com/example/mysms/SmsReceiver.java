@@ -33,24 +33,23 @@ public class SmsReceiver extends BroadcastReceiver {
                 Log.i("sender",sender + "");
                 if(Sender != null){
                     dbm.insertReceivedMessage(content, timestamp, Sender.getId());
-                    Log.i("message",content + "");
+                    Log.i("sender","found and saved" + "");
                 }else {
                     //check without +98
                     String sender_without_cc = sender.replace("+98", "0");
-                    Log.i("sender",sender_without_cc + "");
                     Contact Sender_no_cc = dbm.getContactByPhone(sender_without_cc);
                     if(Sender_no_cc != null) {
-                        Log.i("not null","found");
+                        Log.i("sender","found without cc and saved");
                         dbm.insertReceivedMessage(content, timestamp, Sender_no_cc.getId());
                     }else {
                         //make new contact if received message from new number
                         Contact contact = new Contact(sender,sender);
-                        Log.i("message",content);
+                        Log.i("sender","not found and saved");
                         Contact newContact = dbm.insertContact(contact);
                         dbm.insertReceivedMessage(content, timestamp, newContact.getId());
-                        dbm.close();
                     }
                 }
+                dbm.close();
                 NotificationManager NfManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
